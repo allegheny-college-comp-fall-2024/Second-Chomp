@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Text Processor</title>
+</head>
+<body>
+    <h1>Text Input Form</h1>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Submit</button>
+    </form>
+    {% if processed_text %}
+        <p>Processed Text: {{ processed_text }}</p>
+    {% endif %}
+    {% if chatgpt_response %}
+        <p>ChatGPT Response: {{ chatgpt_response }}</p>
+    {% endif %}
+</body>
+</html>
