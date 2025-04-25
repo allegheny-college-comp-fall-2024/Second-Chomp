@@ -12,7 +12,7 @@
 
         <!-- Text Input-->
         </div>
-            <label for ="user_text">Your Text</label>label><br>
+            <label for="user_text">Your Text</label>
             <textarea id="user_text" name="user_text" rows="4" cols="50">{{ request.POST.user_text|default_if_none:"" }}</textarea>
         </div>
         <br>
@@ -20,31 +20,30 @@
         <!-- Provider selector -->
         <div>
             <label for="provider">Provider</label><br>
-            <select id="provider" name="provider"></select>
-            <option value="openai" {% if provider == "openai" %}selected{% endif %}>OpenAI</option>
-            <option value="cohere" {% if provider == "cohere" %}selected{% endif %}>Cohere</option>
-            <option value="anthropic" {% if provider == "anthropic" %}selected{% endif %}>Anthropic</option>
+            <select id="provider" name="provider">
+                <option value="openai" {% if provider == "openai" %}selected{% endif %}>OpenAI</option>
+                <option value="cohere" {% if provider == "cohere" %}selected{% endif %}>Cohere</option>
+                <option value="anthropic" {% if provider == "anthropic" %}selected{% endif %}>Anthropic</option>
         </select>
         </div>
         <br/>
         <!-- Model selector -->
-         <div>
-            <label for ="model">Model</label><br>
-            <selct id="model" name="model">
-                <option value="" {% if not model %}selected{% endif %}>Default</option>
-                <optgroup label="OpenAI">
-                <option value="gpt-4o"        {% if model == "gpt-4o"        %}selected{% endif %}>gpt-4o</option>
-                </optgroup>
-                <optgroup label="Anthropic">
-                <option value="claude-3-opus-20240229" {% if model == "claude-3-opus-20240229" %}selected{% endif %}>claude-3-opus</option>
-                </optgroup>
-                <optgroup label="Cohere">
-                <option value="command-r-plus" {% if model == "cohere-1.0" %}selected{% endif %}>cohere-1.0</option>
-                </optgroup>
-            </select>
-        </div>
-        <br/>
-        
+        <select id="model" name="model">
+            <option value="" {% if not model %}selected{% endif %}>Default</option>
+          
+            <optgroup label="OpenAI">
+              <option value="gpt-4o" {% if model == "gpt-4o" %}selected{% endif %}>gpt-4o</option>
+            </optgroup>
+          
+            <optgroup label="Anthropic">
+              <option value="claude-3-opus-20240229" {% if model == "claude-3-opus-20240229" %}selected{% endif %}>claude-3-opus</option>
+            </optgroup>
+          
+            <optgroup label="Cohere">
+              <option value="command-r-plus" {% if model == "command-r-plus" %}selected{% endif %}>command-r-plus</option>
+            </optgroup>
+          </select>
+          
         <button type="submit">Submit</button>
     </form>
 

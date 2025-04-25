@@ -14,9 +14,9 @@ class UserInputView(View):
 
     def post(self, request):
         user_text = request.POST.get('user_text', '')
-        # pick provider via querystring, default to OpenAI
-        provider = request.GET.get('provider', 'openai')
-        model = request.GET.get('model', None)
+        # pick provider/model via querystring, default to OpenAI
+        provider = request.POST.get('provider', 'openai')
+        model    = request.POST.get('model',    None)
 
         try:
             client = create_llm(provider, model)

@@ -16,4 +16,4 @@ def create_llm(provider: str, model:str = None):
         client_cls = CLIENTS[provider.lower()]
     except KeyError:
             raise ValueError(f"Unknown LLM provider: '{provider}'.")
-    return client_cls()
+    return client_cls(model)

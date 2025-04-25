@@ -51,7 +51,7 @@ class OpenAIClient(BaseLLMClient):
 class AnthropicClient(BaseLLMClient):
     def __init__(self, model_name: str = None):
         self.client = anthropic.Anthropic(
-            api_key=os.getenv("ANTHROPIC_API_KEY", settings.ANTHROPIC_API_KEY))
+            api_key=os.getenv("", settings.ANTHROPIC_API_KEY))
         self.model = "claude-3-opus-20240229"
 
     def get_response(self, prompt_text: str) -> str:
@@ -70,10 +70,13 @@ class AnthropicClient(BaseLLMClient):
 
 
 class CohereClient(BaseLLMClient):
-    def __init__(self):
-        self.client = cohere.Client(
-            os.getenv("COHERE_API_KEY", settings.COHERE_API_KEY))
-        self.model = "command-r-plus"
+    def __init__(self, model_name: str = None):
+        # look up the env‐var by name, or fall back to your Django setting
+        api_key = os.getenv("CO_API_KEY", settings.COHERE_API_KEY)
+        if not api_key:
+            raise ValueError("No Cohere API key found in CO_API_KEY or settings.COHERE_API_KEY")
+        self.client = cohere.Client(api_key)
+        self.model = model_name
 
     def get_response(self, prompt_text: str) -> str:
         response = self.client.chat(
