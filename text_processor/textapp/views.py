@@ -2,7 +2,7 @@ from django.shortcuts import render  # Import the render function to render temp
 from django.http import HttpResponse  # Import HttpResponse to send HTTP responses
 from django.views import View  # Import View class to create class-based views
 from .forms import UserInputForm  # Import the form class
-from .llm_factory import get_llm_client
+from .llm_factory import create_llm
 import requests  # Import the requests library to make HTTP requests
 
 # Create your views here.
@@ -16,9 +16,10 @@ class UserInputView(View):
         user_text = request.POST.get('user_text', '')
         # pick provider via querystring, default to OpenAI
         provider = request.GET.get('provider', 'openai')
+        model = request.GET.get('model', None)
 
         try:
-            client = get_llm_client(provider)
+            client = create_llm(provider, model)
         except ValueError as e:
             return HttpResponse(f'Error: {e}', status=400)
 
