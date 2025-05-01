@@ -1,9 +1,23 @@
+import os, csv
+from datetime import datetime
 from django.shortcuts import render  # Import the render function to render templates
 from django.http import HttpResponse  # Import HttpResponse to send HTTP responses
 from django.views import View  # Import View class to create class-based views
 from .forms import UserInputForm  # Import the form class
 from .llm_factory import create_llm
-import requests  # Import the requests library to make HTTP requests
+from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer
+from django.conf import settings
+
+analyzer = SentimentIntensityAnalyzer()
+
+LOG_DIR = os.path.join(settings.BASE_DIR, 'logs')
+LOG_FILE = os.path.join(LOG_DIR, "Sentiment_logs.csv")
+os.makedirs(LOG_DIR, exist_ok=True)
+
+if not os.path.exists(LOG_FILE):
+    with open(LOG_FILE, 'w', newline="") as f:
+        w = csv.writer(f)
+        w.writerow(["timestamp","provider","model","prompt","compound","pos","neu","neg"])
 
 # Create your views here.
 
@@ -30,8 +44,30 @@ class UserInputView(View):
                 f'LLM request to {provider} failed: {exc}', 
                 status=502
             )
+        # — NEW: score with VADER —
+        scores   = analyzer.polarity_scores(chat_response)
+        compound = scores["compound"]
+        pos      = scores["pos"]
+        neu      = scores["neu"]
+        neg      = scores["neg"]
+
+        # — NEW: append to your log CSV for offline study —
+        with open(LOG_FILE, "a", newline="") as f:
+            w = csv.writer(f)
+            w.writerow([
+                datetime.utcnow().isoformat(),
+                provider,
+                model or "",
+                user_text.replace("\n"," "),
+                compound,
+                pos,
+                neu,
+                neg
+            ])
 
         return HttpResponse(f'{provider} response: {chat_response}')  # Return the ChatGPT response as an HTTP response
+    
+        
 
 def user_input(request):
     if request.method == 'POST':
@@ -44,7 +80,7 @@ def user_input(request):
         # same factory wiring here:
         provider = request.GET.get('provider', 'openai')
         try:
-            client = get_llm_client(provider)
+            client = create_llm(provider)
         except ValueError as e:
             return render(
                 request, 

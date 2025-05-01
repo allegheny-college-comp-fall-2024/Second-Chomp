@@ -57,6 +57,14 @@
   {% if chatgpt_response %}
     <h2>Response ({{ provider }}{% if model %} / {{ model }}{% endif %})</h2>
     <pre>{{ chatgpt_response }}</pre>
-  {% endif %}
+  
+    <button
+    type="button"
+    onclick="window.location.href = window.location.pathname"
+  >
+    Start Over
+  </button>
+
+    {% endif %}
 </body>
 </html>
